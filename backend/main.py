@@ -100,7 +100,7 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
     return {"message": "Added restaurant"}
 
 @app.get("/get-pair")
-async def get_pair(room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
+async def get_pair(room_id : int, individual_id : str):
 
     # Validate room ID
     if str(room_id) not in mclient.list_database_names():

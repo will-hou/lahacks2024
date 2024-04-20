@@ -160,7 +160,7 @@ async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], indivi
     return {"message": "Vote successful"}
 
 @app.get("/winner")
-async def winner(room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()):
+async def winner(room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
     # Get the winner from MongoDB and return
     winner : Restaurant = ""
     return {"winner" : winner}

@@ -1,5 +1,5 @@
 import logging
-from fastapi import FastAPI, Cookie
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
@@ -41,8 +41,6 @@ async def root():
     }).inserted_id
 
     response = JSONResponse(content={"message": "Room created", "room_id": room_id, "individual_id": indiv_id})
-    response.set_cookie(key="room_id", value=room_id)
-    response.set_cookie(key="individual_id", value=indiv_id)
 
     return response
 
@@ -63,14 +61,12 @@ async def join_room(room_id):
     }).inserted_id
 
     response = JSONResponse(content={"message": "Room created", "room_id": room_id, "individual_id": indiv_id})
-    response.set_cookie(key="room_id", value=room_id)
-    response.set_cookie(key="individual_id", value=indiv_id)
 
     return response
 
 
 @app.post("/add-restaurant")
-async def add_restaurant(restaurant : Restaurant, room_id : int = Cookie(None), individual_id : str = Cookie(None)):
+async def add_restaurant(restaurant : Restaurant, room_id : int, individual_id : str):
 
     # TODO: Add restaurant to MongoDB
 
@@ -81,7 +77,7 @@ async def add_restaurant(restaurant : Restaurant, room_id : int = Cookie(None), 
     return {"message": "Added restaurant"}
 
 @app.get("/get-pair")
-async def get_pair(room_id : int = Cookie(None), individual_id : str = Cookie(None)):
+async def get_pair(room_id : int, individual_id : str):
 
     # Get list of restaurants already visited by individual_id
     visited_restaurants = []
@@ -97,7 +93,7 @@ async def get_pair(room_id : int = Cookie(None), individual_id : str = Cookie(No
     return new_pair
 
 @app.post("/vote")
-async def vote(restaurant : Restaurant, room_id : int = Cookie(None), individual_id : str = Cookie(None)):
+async def vote(restaurant : Restaurant, room_id : int, individual_id : str):
 
     # TODO: Add vote for restaurant to MongoDB
 
@@ -114,7 +110,7 @@ async def vote(restaurant : Restaurant, room_id : int = Cookie(None), individual
     return {"message": "Vote successful"}
 
 @app.get("/winner")
-async def winner(room_id : int = Cookie(None), individual_id : str = Cookie(None)):
+async def winner(room_id : int, individual_id : str):
     # Get the winner from MongoDB and return
     winner : Restaurant = ""
     return {"winner" : winner}

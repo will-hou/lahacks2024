@@ -1,10 +1,19 @@
+import logging
 from fastapi import FastAPI, Cookie
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from pymongo import MongoClient
 
 app = FastAPI()
 
 app.next_room_index = 1000
+
+logger = logging.getLogger("uvicorn")
+logger.setLevel(logging.DEBUG)
+
+mclient = MongoClient("mongodb+srv://yasper:29DVVkQOa9IAKamB@lahacks2024.dcnfecn.mongodb.net/?retryWrites=true&w=majority&appName=lahacks2024")
+
+
 
 class Restaurant(BaseModel):
     place_id: str
@@ -21,9 +30,15 @@ async def root():
     app.next_room_index += 1
 
     # Create new room and new database in MongoDB for the room
+    room_db = mclient[str(room_id)]
+    restaurants_collection = room_db["restaurants"]
+    individuals_collection = room_db["individuals"]
 
     # Also create an individual in the DB and tell the room creator their ID
-    indiv_id = 1
+    indiv_id = individuals_collection.insert_one({
+        "restaurants_seen" : [],
+        "finished_voting" : False,
+    }).inserted_id
 
     response = JSONResponse(content={"message": "Room created"})
     response.set_cookie(key="room_id", value=room_id)
@@ -35,6 +50,7 @@ async def root():
 async def join_room(room_id):
     
     # Validate room ID
+
 
     # Create new individual with an incremental ID
 
@@ -48,7 +64,7 @@ async def join_room(room_id):
 
 
 @app.post("/add-restaurant")
-async def add_restaurant(restaurant : Restaurant, room_id : int = Cookie(None), individual_id : int = Cookie(None)):
+async def add_restaurant(restaurant : Restaurant, room_id : int = Cookie(None), individual_id : str = Cookie(None)):
 
     # TODO: Add restaurant to MongoDB
 
@@ -59,7 +75,7 @@ async def add_restaurant(restaurant : Restaurant, room_id : int = Cookie(None), 
     return {"message": "Added restaurant"}
 
 @app.get("/get-pair")
-async def get_pair(room_id : int = Cookie(None), individual_id : int = Cookie(None)):
+async def get_pair(room_id : int = Cookie(None), individual_id : str = Cookie(None)):
 
     # Get list of restaurants already visited by individual_id
     visited_restaurants = []
@@ -75,7 +91,7 @@ async def get_pair(room_id : int = Cookie(None), individual_id : int = Cookie(No
     return new_pair
 
 @app.post("/vote")
-async def vote(restaurant : Restaurant, room_id : int = Cookie(None), individual_id : int = Cookie(None)):
+async def vote(restaurant : Restaurant, room_id : int = Cookie(None), individual_id : str = Cookie(None)):
 
     # TODO: Add vote for restaurant to MongoDB
 
@@ -92,7 +108,7 @@ async def vote(restaurant : Restaurant, room_id : int = Cookie(None), individual
     return {"message": "Vote successful"}
 
 @app.get("/winner")
-async def winner(room_id : int = Cookie(None), individual_id : int = Cookie(None)):
+async def winner(room_id : int = Cookie(None), individual_id : str = Cookie(None)):
     # Get the winner from MongoDB and return
     winner : Restaurant = ""
     return {"winner" : winner}

@@ -1,8 +1,11 @@
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
+from typing import Annotated
+import random
+
 
 app = FastAPI()
 
@@ -56,7 +59,7 @@ async def join_room(room_id):
     individuals_collection = room_db["individuals"]
 
     indiv_id = individuals_collection.insert_one({
-        "restaurants_seen" : [],
+        "restaurants_seen" : {},
         "finished_voting" : False,
     }).inserted_id
 
@@ -66,7 +69,7 @@ async def join_room(room_id):
 
 
 @app.post("/add-restaurant")
-async def add_restaurant(restaurant : Restaurant, room_id : int, individual_id : str):
+async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
 
     # Validate room ID
     if str(room_id) not in mclient.list_database_names():
@@ -77,7 +80,7 @@ async def add_restaurant(restaurant : Restaurant, room_id : int, individual_id :
     # Validate individual ID
     individuals_collection = room_db["individuals"]
     # Validate individual_id is a real id?
-    if not individuals_collection.find_one({'_id' : individual_id}):
+    if individuals_collection.count_documents({'_id' : individual_id}, limit = 1) == 0:
         return {"message": "Individual does not exist"} 
 
     # Add restaurant to DB w/ room_id
@@ -96,7 +99,7 @@ async def add_restaurant(restaurant : Restaurant, room_id : int, individual_id :
     return {"message": "Added restaurant"}
 
 @app.get("/get-pair")
-async def get_pair(room_id : int, individual_id : str):
+async def get_pair(room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()):
 
     # Validate room ID
     if str(room_id) not in mclient.list_database_names():
@@ -110,12 +113,27 @@ async def get_pair(room_id : int, individual_id : str):
     if not individuals_collection.find_one({'_id' : individual_id}):
         return {"message": "Individual does not exist"}
 
-    # Get list of restaurants already visited by individual_id
+    restaurants_with_weighting = {}
     visited_restaurants = individuals_collection.find_one({'_id' : individual_id})['restaurants_seen']
+    # Get list of restaurants already visited by individual_id
+    average_occurrence = 0
+    for restaurant in room_db['restaurants']:
+        average_occurrence += visited_restaurants[restaurant['place_id']]
+    average_occurrence /= room_db['restaurants'].estimated_document_count()
+    # 10 + (avg_occ - num_occ)*2
+    for restaurant in room_db['restaurants']:
+        restaurants_with_weighting[restaurant["place_id"]] = 10 + (average_occurrence - visited_restaurants[restaurant['place_id']])*2
+
         
+    rnd_one = room_db['restaurants'].find_one(random.choices(restaurants_with_weighting.keys, weights=restaurants_with_weighting.values, k=1))
+    restaurants_with_weighting.pop(rnd_one)
+    rnd_two = room_db['restaurants'].find_one(random.choices(restaurants_with_weighting.keys, weights=restaurants_with_weighting.values, k=1))
+
     # Get a pair of restaurants from MongoDB that have not already been visited
-    restaurant_one : Restaurant = ""
-    restaurant_two : Restaurant = ""
+    restaurant_one : Restaurant = Restaurant(place_id=rnd_one['place_id'], name=rnd_one['name'], photo_reference=rnd_one['photo_reference'],
+                        price_level=rnd_one['price_level'], rating=rnd_one['rating'])
+    restaurant_two : Restaurant = Restaurant(place_id=rnd_two['place_id'], name=rnd_two['name'], photo_reference=rnd_two['photo_reference'],
+                        price_level=rnd_two['price_level'], rating=rnd_two['rating'])
     new_pair = {"restaurant_one": restaurant_one, 
                 "restaurant_two": restaurant_two}
 
@@ -124,7 +142,7 @@ async def get_pair(room_id : int, individual_id : str):
     return new_pair
 
 @app.post("/vote")
-async def vote(restaurant : Restaurant, room_id : int, individual_id : str):
+async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()):
 
     # TODO: Add vote for restaurant to MongoDB
 
@@ -141,7 +159,7 @@ async def vote(restaurant : Restaurant, room_id : int, individual_id : str):
     return {"message": "Vote successful"}
 
 @app.get("/winner")
-async def winner(room_id : int, individual_id : str):
+async def winner(room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()):
     # Get the winner from MongoDB and return
     winner : Restaurant = ""
     return {"winner" : winner}

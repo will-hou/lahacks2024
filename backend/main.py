@@ -100,7 +100,7 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
     return {"message": "Added restaurant"}
 
 @app.get("/get-pair")
-async def get_pair(room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()):
+async def get_pair(room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
 
     # Validate room ID
     if str(room_id) not in mclient.list_database_names():
@@ -143,7 +143,7 @@ async def get_pair(room_id : Annotated[int, Body()], individual_id : Annotated[s
     return new_pair
 
 @app.post("/vote")
-async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()):
+async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
 
     # TODO: Add vote for restaurant to MongoDB
 

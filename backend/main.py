@@ -40,7 +40,7 @@ async def root():
         "finished_voting" : False,
     }).inserted_id
 
-    response = JSONResponse(content={"message": "Room created"})
+    response = JSONResponse(content={"message": "Room created", "room_id": room_id, "individual_id": indiv_id})
     response.set_cookie(key="room_id", value=room_id)
     response.set_cookie(key="individual_id", value=indiv_id)
 
@@ -50,13 +50,19 @@ async def root():
 async def join_room(room_id):
     
     # Validate room ID
-
+    if str(room_id) not in mclient.list_database_names():
+        return {"message": "Room does not exist"}
 
     # Create new individual with an incremental ID
+    room_db = mclient[str(room_id)]
+    individuals_collection = room_db["individuals"]
 
-    indiv_id = 42
+    indiv_id = individuals_collection.insert_one({
+        "restaurants_seen" : [],
+        "finished_voting" : False,
+    }).inserted_id
 
-    response = JSONResponse(content={"message": "Room joined"})
+    response = JSONResponse(content={"message": "Room created", "room_id": room_id, "individual_id": indiv_id})
     response.set_cookie(key="room_id", value=room_id)
     response.set_cookie(key="individual_id", value=indiv_id)
 

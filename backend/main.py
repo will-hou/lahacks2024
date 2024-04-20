@@ -40,7 +40,7 @@ async def root():
         "finished_voting" : False,
     }).inserted_id
 
-    response = JSONResponse(content={"message": "Room created", "room_id": room_id, "individual_id": indiv_id})
+    response = JSONResponse(content={"message": "Room created", "room_id": room_id, "individual_id": str(indiv_id)})
 
     return response
 
@@ -60,7 +60,7 @@ async def join_room(room_id):
         "finished_voting" : False,
     }).inserted_id
 
-    response = JSONResponse(content={"message": "Room created", "room_id": room_id, "individual_id": indiv_id})
+    response = JSONResponse(content={"message": "Room created", "room_id": room_id, "individual_id": str(indiv_id)})
 
     return response
 

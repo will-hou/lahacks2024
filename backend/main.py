@@ -81,7 +81,7 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
     # Validate individual ID
     individuals_collection = room_db["individuals"]
     # Validate individual_id is a real id?
-    if individuals_collection.count_documents({'_id' : individual_id}, limit = 1) == 0:
+    if individuals_collection.count_documents({'_id' : ObjectId(individual_id)}, limit = 1) == 0:
         return {"message": "Individual does not exist"} 
 
     # Add restaurant to DB w/ room_id
@@ -111,7 +111,7 @@ async def get_pair(room_id : Annotated[int, Body()], individual_id : Annotated[s
     # Validate individual ID
     individuals_collection = room_db["individuals"]
     # Validate individual_id is a real id?
-    if not individuals_collection.find_one({'_id' : ObjectId(individual_id)}):
+    if individuals_collection.count_documents({'_id' : ObjectId(individual_id)}, limit=1) == 0:
         return {"message": "Individual does not exist"}
 
     restaurants_with_weighting = {}

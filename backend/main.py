@@ -4,6 +4,8 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+app.next_room_index = 1000
+
 class Restaurant(BaseModel):
     place_id: str
     name: str
@@ -11,13 +13,12 @@ class Restaurant(BaseModel):
     price_level: int # 0 - 4
     rating: float # 1.0 - 5.0
 
-next_room_index = 1000
 
 @app.get("/")
 async def root():
 
-    room_id = next_room_index
-    next_room_index += 1
+    room_id = app.next_room_index
+    app.next_room_index += 1
 
     # Create new room and new database in MongoDB for the room
 
@@ -28,11 +29,13 @@ async def root():
     response.set_cookie(key="room_id", value=room_id)
     response.set_cookie(key="individual_id", value=indiv_id)
 
-    return {"room_id": 1234, "individual_id": 1}
+    return response
 
 @app.get("/room/{room_id}")
 async def join_room(room_id):
     
+    # Validate room ID
+
     # Create new individual with an incremental ID
 
     indiv_id = 42

@@ -40,7 +40,7 @@ async def root():
 
     # Also create an individual in the DB and tell the room creator their ID
     indiv_id = individuals_collection.insert_one({
-        "restaurants_seen" : [],
+        "restaurants_seen" : {},
         "finished_voting" : False,
     }).inserted_id
 

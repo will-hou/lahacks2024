@@ -97,6 +97,9 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
         "is_winner": False
     })
 
+    for individual in individuals_collection:
+        individual['restaurants_seen'][str(restaurant.place_id)] = 0
+
     return {"message": "Added restaurant"}
 
 @app.get("/get-pair")

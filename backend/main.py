@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
 from typing import Annotated
+from bson.objectid import ObjectId
 import random
 
 
@@ -110,11 +111,11 @@ async def get_pair(room_id : Annotated[int, Body()], individual_id : Annotated[s
     # Validate individual ID
     individuals_collection = room_db["individuals"]
     # Validate individual_id is a real id?
-    if not individuals_collection.find_one({'_id' : individual_id}):
+    if not individuals_collection.find_one({'_id' : ObjectId(individual_id)}):
         return {"message": "Individual does not exist"}
 
     restaurants_with_weighting = {}
-    visited_restaurants = individuals_collection.find_one({'_id' : individual_id})['restaurants_seen']
+    visited_restaurants = individuals_collection.find_one({'_id' : ObjectId(individual_id)})['restaurants_seen']
     # Get list of restaurants already visited by individual_id
     average_occurrence = 0
     for restaurant in room_db['restaurants']:

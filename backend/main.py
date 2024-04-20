@@ -11,12 +11,13 @@ class Restaurant(BaseModel):
     price_level: int # 0 - 4
     rating: float # 1.0 - 5.0
 
+next_room_index = 1000
 
 @app.get("/")
 async def root():
 
-    # Room ID determined by number of previous databases created + 1 (i.e. 1 previous DB/room = new ID is 2)
-    room_id = 99
+    room_id = next_room_index
+    next_room_index += 1
 
     # Create new room and new database in MongoDB for the room
 
@@ -59,7 +60,7 @@ async def get_pair(room_id : int = Cookie(None), individual_id : int = Cookie(No
 
     # Get list of restaurants already visited by individual_id
     visited_restaurants = []
-
+        
     # Get a pair of restaurants from MongoDB that have not already been visited
     restaurant_one : Restaurant = ""
     restaurant_two : Restaurant = ""
@@ -70,9 +71,25 @@ async def get_pair(room_id : int = Cookie(None), individual_id : int = Cookie(No
 
     return new_pair
 
-@app.put("/vote")
+@app.post("/vote")
 async def vote(restaurant : Restaurant, room_id : int = Cookie(None), individual_id : int = Cookie(None)):
 
     # TODO: Add vote for restaurant to MongoDB
 
-    return {"message": "Ok"}
+    num_visited_restaurants = 0
+    total_restaurants = 10
+    if num_visited_restaurants == total_restaurants:
+        # Set finished voting under individual in MongoDB
+
+        # Check if everyone has finished voting
+
+        # If everyone is finished voting, calculate winner and set that entry to have is_winner = true
+        return {"finished_voting": True}
+
+    return {"message": "Vote successful"}
+
+@app.get("/winner")
+async def winner(room_id : int = Cookie(None), individual_id : int = Cookie(None)):
+    # Get the winner from MongoDB and return
+    winner : Restaurant = ""
+    return {"winner" : winner}

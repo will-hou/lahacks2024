@@ -60,7 +60,7 @@ async def join_room(room_id):
         "finished_voting" : False,
     }).inserted_id
 
-    response = JSONResponse(content={"message": "Room created", "room_id": room_id, "individual_id": str(indiv_id)})
+    response = JSONResponse(content={"message": "Room created", "room_id": int(room_id), "individual_id": str(indiv_id)})
 
     return response
 
@@ -68,19 +68,50 @@ async def join_room(room_id):
 @app.post("/add-restaurant")
 async def add_restaurant(restaurant : Restaurant, room_id : int, individual_id : str):
 
-    # TODO: Add restaurant to MongoDB
+    # Validate room ID
+    if str(room_id) not in mclient.list_database_names():
+        return {"message": "Room does not exist"}
 
+    room_db = mclient[str(room_id)]
+
+    # Validate individual ID
+    individuals_collection = room_db["individuals"]
     # Validate individual_id is a real id?
+    if not individuals_collection.find_one({'_id' : individual_id}):
+        return {"message": "Individual does not exist"} 
 
     # Add restaurant to DB w/ room_id
+    restaurants_collection = room_db["restaurants"]
+    restaurants_collection.insert_one({
+        "place_id" : restaurant.place_id,
+        "name" : restaurant.name,
+        "photo_reference" : restaurant.photo_reference,
+        "price_level" : restaurant.price_level,
+        "rating" : restaurant.rating,
+        "votes" : 0,
+        "appearances" : 0,
+        "is_winner": False
+    })
 
     return {"message": "Added restaurant"}
 
 @app.get("/get-pair")
 async def get_pair(room_id : int, individual_id : str):
 
+    # Validate room ID
+    if str(room_id) not in mclient.list_database_names():
+        return {"message": "Room does not exist"}
+
+    room_db = mclient[str(room_id)]
+
+    # Validate individual ID
+    individuals_collection = room_db["individuals"]
+    # Validate individual_id is a real id?
+    if not individuals_collection.find_one({'_id' : individual_id}):
+        return {"message": "Individual does not exist"}
+
     # Get list of restaurants already visited by individual_id
-    visited_restaurants = []
+    visited_restaurants = individuals_collection.find_one({'_id' : individual_id})['restaurants_seen']
         
     # Get a pair of restaurants from MongoDB that have not already been visited
     restaurant_one : Restaurant = ""

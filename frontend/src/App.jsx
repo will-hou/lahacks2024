@@ -7,6 +7,7 @@ import HomePage from './views/HomePage.jsx'
 import ComparePage from './views/ComparePage.jsx'
 import MapPage from './views/MapPage.jsx';
 
+
 import './App.css'
 
 // register Swiper custom elements
@@ -17,7 +18,7 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    <>  
       <swiper-container className='h-screen w-screen' pagination="true">
         <swiper-slide>
           <HomePage />

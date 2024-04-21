@@ -17,10 +17,28 @@ const Homepage = () => {
     const [inCreatedRoom, setInCreatedRoom] = useState(false);
     const [roomID, setRoomID] = useState(null);
     const [individualId, setIndividualId] = useState(null);
+    const [numInRoom, setNumInRoom] = useState(0);
 
     const onRoomJoinToast = () => toast.success('Successfully joined room');
     const onRoomCreateToast = () => toast.success('Successfully created room');
     const onRestaurantAddToast = () => toast.success('Successfully added restaurant');
+
+    function fetchNumIndividuals(roomId) {
+        return fetch(`${BACKEND_ENDPOINT}numindividuals/?room_id=${roomId}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => 
+                setNumInRoom(data)
+            )
+          .catch(error => {
+            console.error('Error fetching data:', error);
+            return null;
+          });
+      }
 
     useEffect(() => {
         console.log("Running useeffect")
@@ -81,7 +99,31 @@ const Homepage = () => {
     useEffect(() => {
         console.log("Room ID: " + roomID)
         console.log("Individual ID: " + individualId)
+        console.log("Num in room: " + numInRoom)
     }, [roomID, individualId])
+
+    // Fetch number of people in room every 10 seconds
+    useEffect(() => {
+        // Define a function to fetch data
+        const fetchData = async () => {
+            try {
+                if (roomID) {
+                    await fetchNumIndividuals(roomID);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+    
+        // Call fetchData initially
+        fetchData();
+    
+        // Set up interval to call fetchData every 10 seconds
+        const intervalId = setInterval(fetchData, 10000);
+    
+        // Clean up the interval on component unmount
+        return () => clearInterval(intervalId);
+    }, [roomID]); // Dependency array with roomID
 
     function closeModal() {
         setIsOpen(false);
@@ -110,7 +152,7 @@ const Homepage = () => {
                         <div className="flex flex-row gap-5 ">
                             <div className='flex flex-row gap-2 items-center'>
                                 <div className="h-3 w-3 rounded-full bg-green-500 flex justify-center items-center" />
-                                <p> 2 Online </p>
+                                <p> {numInRoom} online </p>
                             </div>
                             <p> | </p>
                             <p> Los Angeles, CA </p>

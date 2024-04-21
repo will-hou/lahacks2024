@@ -3,6 +3,7 @@ import { useRoomContext } from '../RoomContext.jsx';
 
 import RestaurantCard from '../components/RestaurantCard.jsx';
 import { BACKEND_ENDPOINT } from '../constants.js';
+import toast from 'react-hot-toast';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +15,8 @@ const ComparePage = () => {
     const { roomID, individualID, restaurantOne, restaurantTwo, setRestaurantOne, setRestaurantTwo, isFinishedVoting} = useRoomContext();
     
     const navigate = useNavigate();
+
+    const notifyOfPairings = toast("You have a pairing to review ->")
 
 
     const getImageUrl = (photoReference, maxWidth, maxHeight) => {
@@ -54,6 +57,7 @@ const ComparePage = () => {
         if (canStartVoting & !restaurantOne & !isFinishedVoting) {
             console.log("Trying to fetch pair")
             fetchPair();
+            notifyOfPairings();
         }
     }, [canStartVoting, restaurantOne]);
 

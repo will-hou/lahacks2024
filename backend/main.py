@@ -167,12 +167,29 @@ async def get_pair(room_id : int, individual_id : str):
     individuals_collection.update_one( { '_id': ObjectId(individual_id) }, 
                                 { '$inc': {"restaurants_seen."+rnd_two['place_id'] : 1}})
 
+    rnd_one['appearances'] = rnd_one['appearances'] + 1
+    rnd_two['appearances'] = rnd_two['appearances'] + 1
+
     return new_pair
 
 @app.post("/vote")
 async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
 
+    # Validate room ID
+    if str(room_id) not in mclient.list_database_names():
+        return {"message": "Room does not exist"}
+
+    room_db = mclient[str(room_id)]
+
+    # Validate individual ID
+    individuals_collection = room_db["individuals"]
+    # Validate individual_id is a real id?
+    if individuals_collection.count_documents({'_id' : ObjectId(individual_id)}, limit=1) == 0:
+        return {"message": "Individual does not exist"}
+
     # TODO: Add vote for restaurant to MongoDB
+    restaurants_collection = room_db['restaurants']
+    restaurants_collection.find({"place_id" : restaurant.place_id})['votes'] = restaurants_collection.find({"place_id" : restaurant.place_id})['votes'] + 1
 
     num_visited_restaurants = 0
     total_restaurants = 10

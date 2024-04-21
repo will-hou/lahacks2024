@@ -288,3 +288,10 @@ async def restaurants(room_id : int):
         restaurants.append(restaurant['place_id'])
 
     return restaurants
+
+@app.get("/purgedb")
+async def purgedb():
+    for db in mclient.list_database_names():
+        if db != "local" and db != "admin":
+            print("Dropping " + db)
+            mclient.drop_database(db)

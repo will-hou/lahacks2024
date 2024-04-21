@@ -135,9 +135,9 @@ async def get_pair(room_id : int, individual_id : str):
         restaurants_with_weighting[restaurant["place_id"]] = 10 + (average_occurrence - visited_restaurants[restaurant['place_id']])*2
 
         
-    rnd_one = room_db['restaurants'].find_one({"place_id" : random.choices(restaurants_with_weighting.keys(), weights=restaurants_with_weighting.values(), k=1)[0]})
+    rnd_one = room_db['restaurants'].find_one({"place_id" : random.choices(list(restaurants_with_weighting.keys()), weights=list(restaurants_with_weighting.values()), k=1)[0]})
     restaurants_with_weighting.pop(rnd_one)
-    rnd_two = room_db['restaurants'].find_one({"place_id" : random.choices(restaurants_with_weighting.keys(), weights=restaurants_with_weighting.values(), k=1)[0]})
+    rnd_two = room_db['restaurants'].find_one({"place_id" : random.choices(list(restaurants_with_weighting.keys()), weights=list(restaurants_with_weighting.values()), k=1)[0]})
 
     # Get a pair of restaurants from MongoDB that have not already been visited
     restaurant_one : Restaurant = Restaurant(place_id=rnd_one['place_id'], name=rnd_one['name'], 

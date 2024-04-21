@@ -101,6 +101,8 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
 
     for individual in individuals_collection.find():
         individual['restaurants_seen'][str(restaurant.place_id)] = 0
+        individuals_collection.update_one( { '_id': individual['_id'] }, 
+                                { '$set': {"restaurants_seen."+restaurant.place_id : 0}})
 
     return {"message": "Added restaurant"}
 

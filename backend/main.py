@@ -256,3 +256,17 @@ async def num_individuals(room_id : int):
     for individual in mclient[str(room_id)]['individuals'].find():
         count += 1
     return count
+
+@app.get("/restaurants")
+async def restaurants(room_id : int):
+    # Validate room ID
+    if str(room_id) not in mclient.list_database_names():
+        return {"message": "Room does not exist"}
+
+    room_db = mclient[str(room_id)]
+
+    restaurants = []
+    for restaurant in room_db['restaurants'].find():
+        restaurants.append(restaurant['place_id'])
+
+    return restaurants

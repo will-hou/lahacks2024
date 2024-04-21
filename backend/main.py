@@ -233,7 +233,7 @@ async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], indivi
     return {"message": "Vote successful", "finished_voting" : False}
 
 @app.get("/winner")
-async def winner(room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
+async def winner(room_id : int, individual_id : str):
     # Validate room ID
     if str(room_id) not in mclient.list_database_names():
         return {"message": "Room does not exist"}

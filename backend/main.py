@@ -195,7 +195,7 @@ async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], indivi
                                 { '$inc': {"votes" : 1}})
 
     num_visited_restaurants = 0
-    for key, value in individuals_collection.find({"_id" : ObjectId(individual_id)})['restaurants_seen'].items():
+    for key, value in individuals_collection.find_one({"_id" : ObjectId(individual_id)})['restaurants_seen'].items():
         if value >= 1:
             num_visited_restaurants += 1
 

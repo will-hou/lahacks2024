@@ -99,7 +99,7 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
         "is_winner": False
     })
 
-    for individual in individuals_collection:
+    for individual in individuals_collection.find():
         new_map = individual['restaurants_seen']
         new_map[str(restaurant.place_id)] = 0
         individual['restaurants_seen'] = new_map
@@ -125,11 +125,11 @@ async def get_pair(room_id : int, individual_id : str):
     visited_restaurants = individuals_collection.find_one({'_id' : ObjectId(individual_id)})['restaurants_seen']
     # Get list of restaurants already visited by individual_id
     average_occurrence = 0
-    for restaurant in room_db['restaurants']:
+    for restaurant in room_db['restaurants'].find():
         average_occurrence += visited_restaurants[restaurant['place_id']]
     average_occurrence /= room_db['restaurants'].estimated_document_count()
     # 10 + (avg_occ - num_occ)*2
-    for restaurant in room_db['restaurants']:
+    for restaurant in room_db['restaurants'].find():
         restaurants_with_weighting[restaurant["place_id"]] = 10 + (average_occurrence - visited_restaurants[restaurant['place_id']])*2
 
         

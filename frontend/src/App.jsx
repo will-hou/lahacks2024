@@ -12,17 +12,18 @@ import './App.css'
 // register Swiper custom elements
 register();
 
+
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <swiper-container className='h-screen w-screen'>
+      <swiper-container className='h-screen w-screen' pagination="true">
         <swiper-slide>
           <HomePage />
         </swiper-slide>
         <swiper-slide>
-          <swiper-container direction="vertical">
+          <swiper-container direction="vertical" pagination="true">
             <swiper-slide>
               <ComparePage />
             </swiper-slide>

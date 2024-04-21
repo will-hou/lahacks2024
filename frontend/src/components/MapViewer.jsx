@@ -41,12 +41,11 @@ const MapViewer = () => {
                     gestureHandling={'greedy'}
                     disableDefaultUI={true}
                 >
-
-                    <Marker
+                    {/* <Marker
                         position={{ lat: location.latitude, lng: location.longitude }}
                         clickable={true}
                         onClick={() => alert('marker was clicked!')}
-                        title={'clickable google.maps.Marker'} />
+                        title={'clickable google.maps.Marker'} /> */}
 
                 </Map>
             </APIProvider>

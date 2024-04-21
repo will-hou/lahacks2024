@@ -20,13 +20,30 @@ def getDetails(api_key: str, place_id: str ) -> str:
             # print(data)
 
             # Check if the response contains the location 
+
+            #print("HERE IS DATA:",data)
             if 'result' in data:
                 info = dict()
-                info['place_id'] = data['result']['place_id']
-                info['name'] = data['result']['name']
-                info['website'] = data['result']['website']
-                info['photo_reference'] = data['result']['photos'][0]['photo_reference']
-                info['rating'] = data['result']['rating']
+                try:
+                    info['place_id'] = data['result']['place_id']
+                except:
+                    info['place_id'] = ''
+                try:    
+                    info['name'] = data['result']['name']
+                except:
+                    info['name'] = ''
+                try:
+                    info['website'] = data['result']['website']
+                except:
+                    info['website'] = ''
+                try:
+                    info['photo_reference'] = data['result']['photos'][0]['photo_reference']
+                except:
+                    info['photo_reference'] = ''
+                try:
+                    info['rating'] = data['result']['rating']
+                except:
+                    info['rating'] = ''
                 #print("Info", info)
                 return info
             else:
@@ -41,7 +58,7 @@ def getDetails(api_key: str, place_id: str ) -> str:
     
 if __name__ == '__main__':
     # Replace 'YOUR_API_KEY' with your actual API key
-    api_key = 'AIzaSyDnfl8r3cvSdPrTniJHCqrhRVK5dht159Q'
+    api_key = 'YOUR_API_KEY'
 
     # Place ID of the location you want to retrieve the website URL for
     place_id = 'ChIJuQFwNo68woARC7sp3N5RWKs' #set to BCD Tofu House in Irvine for example

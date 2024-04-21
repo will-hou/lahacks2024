@@ -5,7 +5,7 @@ def searchNearby(api_key, location, keywords, open_now=True):
     
     params = {
         'location': location,
-        'radius': 1000,  # Adjust the radius as needed
+        'radius': 5000,  # Adjust the radius as needed
         'type': 'restaurant',
         'keyword': '|'.join(keywords),  # Join keywords with '|'
         'opennow': open_now,
@@ -16,7 +16,7 @@ def searchNearby(api_key, location, keywords, open_now=True):
     data = response.json()
     
     if 'results' in data:
-        print(data['results'])
+        #print(data['results'])
         return [x['place_id'] for x in data['results']]
     else:
         return None

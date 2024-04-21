@@ -18,12 +18,12 @@ def getSite(api_key: str, place_id: str ) -> str:
         if response.status_code == 200:
             # Parse the JSON response
             data = response.json()
-            print(data)
+            #print(data)
 
             # Check if the response contains the website URL
             if 'result' in data and 'website' in data['result']:
                 website_url = data['result']['website']
-                print("Website URL:", website_url)
+                #print("Website URL:", website_url)
                 return website_url
             else:
                 print("Website URL not found for this location.")

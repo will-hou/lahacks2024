@@ -61,7 +61,7 @@ const RestaurantCard = ({ place_id, name, link, photo_reference, price_level, ra
                             </div>
                             <div className="bg-white shadow-xl bg-opacity-90 rounded-full border p-2 px-4 max-w-[80%] max-h-[30%]" onClick={() => window.open("https://google.com", "_blank")}>
                                 {/* Your button content */}
-                                <p className='text-sm'>
+                                <p className='text-sm' onClick={(e) => e.stopPropagation()}>
                                     <a href={link} target='_blank' rel='noopener noreferrer'>
                                         More Details
                                     </a>

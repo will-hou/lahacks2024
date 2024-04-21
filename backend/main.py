@@ -1,5 +1,5 @@
 import logging
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -7,6 +7,9 @@ from pymongo import MongoClient
 from typing import Annotated
 from bson.objectid import ObjectId
 import random
+import requests
+
+from getDetails import getDetails
 
 
 app = FastAPI()
@@ -24,7 +27,8 @@ logger.setLevel(logging.DEBUG)
 
 mclient = MongoClient("mongodb+srv://yasper:29DVVkQOa9IAKamB@lahacks2024.dcnfecn.mongodb.net/?retryWrites=true&w=majority&appName=lahacks2024")
 
-
+# Obfuscate if have time
+GOOGLE_API_KEY = 'AIzaSyDnfl8r3cvSdPrTniJHCqrhRVK5dht159Q'
 
 class Restaurant(BaseModel):
     place_id: str
@@ -83,12 +87,13 @@ async def join_room(room_id):
 
 
 @app.post("/add-restaurant")
-async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
-
+async def add_restaurant(place_id : str, room_id : str, individual_id : str):
     # Validate room ID
     if str(room_id) not in mclient.list_database_names():
         return {"message": "Room does not exist"}
 
+    restaurant_details = getDetails(api_key=GOOGLE_API_KEY, place_id=place_id)
+    
     room_db = mclient[str(room_id)]
 
     # Validate individual ID
@@ -100,20 +105,33 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
     # Add restaurant to DB w/ room_id
     restaurants_collection = room_db["restaurants"]
     restaurants_collection.insert_one({
-        "place_id" : restaurant.place_id,
-        "name" : restaurant.name, 
-        "link" : restaurant.link,
-        "photo_reference" : restaurant.photo_reference,
-        "price_level" : restaurant.price_level,
-        "rating" : restaurant.rating,
+        "place_id" : restaurant_details['place_id'],
+        "name" : restaurant_details['name'], 
+        "link" : restaurant_details['website'],
+        "photo_reference" : restaurant_details['photo_reference'],
+        "price_level" : 'NA',
+        "rating" : restaurant_details['rating'],
         "votes" : 0,
         "appearances" : 0,
         "is_winner": False
     })
 
+    print(
+        {
+        "place_id" : restaurant_details['place_id'],
+        "name" : restaurant_details['name'], 
+        "link" : restaurant_details['website'],
+        "photo_reference" : restaurant_details['photo_reference'],
+        "price_level" : 'NA',
+        "rating" : restaurant_details['rating'],
+        "votes" : 0,
+        "appearances" : 0,
+        "is_winner": False
+    }
+    )
     for individual in individuals_collection.find():
         individuals_collection.update_one( { '_id': individual['_id'] }, 
-                                { '$set': {"restaurants_seen."+restaurant.place_id : 0}})
+                                { '$set': {"restaurants_seen."+restaurant_details['place_id'] : 0}})
 
     return {"message": "Added restaurant"}
 

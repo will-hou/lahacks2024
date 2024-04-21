@@ -118,8 +118,8 @@ const Homepage = () => {
         // Call fetchData initially
         fetchData();
     
-        // Set up interval to call fetchData every 10 seconds
-        const intervalId = setInterval(fetchData, 10000);
+        // Set up interval to call fetchData every 5 seconds
+        const intervalId = setInterval(fetchData, 5000);
     
         // Clean up the interval on component unmount
         return () => clearInterval(intervalId);

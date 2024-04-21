@@ -109,7 +109,7 @@ async def add_restaurant(place_id : str, room_id : str, individual_id : str):
         "name" : restaurant_details['name'], 
         "link" : restaurant_details['website'],
         "photo_reference" : restaurant_details['photo_reference'],
-        "price_level" : 'NA',
+        "price_level" : 0,
         "rating" : restaurant_details['rating'],
         "votes" : 0,
         "appearances" : 0,

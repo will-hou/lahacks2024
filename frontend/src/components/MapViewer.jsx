@@ -5,7 +5,6 @@ const MapViewer = () => {
 
     const GOOGLE_PLACES_API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
 
-    console.log("API KEY: " + GOOGLE_PLACES_API_KEY)
     const [location, setLocation] = useState(null);
     const [error, setError] = useState(null);
 

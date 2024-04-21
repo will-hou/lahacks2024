@@ -59,9 +59,9 @@ const RestaurantCard = ({ place_id, name, link, photo_reference, price_level, ra
                             <div className='flex shadow-xl items-center'>
                                 <p className="bg-white shadow-xl bg-opacity-90 text-gray-700 rounded-full px-4 py-1 text-sm"> {rating} </p>
                             </div>
-                            <div className="bg-white shadow-xl bg-opacity-90 rounded-full border p-2 px-4 max-w-[80%] max-h-[30%]" onClick={() => window.open("https://google.com", "_blank")}>
+                            <div onClick={(e) => e.stopPropagation()} className="bg-white shadow-xl cursor-pointer bg-opacity-90 rounded-full border p-2 px-4 max-w-[80%] max-h-[30%]">
                                 {/* Your button content */}
-                                <p className='text-sm' onClick={(e) => e.stopPropagation()}>
+                                <p className='text-sm'>
                                     <a href={link} target='_blank' rel='noopener noreferrer'>
                                         More Details
                                     </a>

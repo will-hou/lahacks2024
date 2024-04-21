@@ -4,6 +4,8 @@ import React from 'react';
 
 import './HomePage.css';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import toast, { Toaster } from 'react-hot-toast';
+
 import { BACKEND_ENDPOINT } from '../constants';
 const GOOGLE_PLACES_API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
 
@@ -16,6 +18,10 @@ const Homepage = () => {
     const [inCreatedRoom, setInCreatedRoom] = useState(false);
     const [roomID, setRoomID] = useState(null);
 
+    const onRoomJoinToast = () => toast.success('Successfully joined room');
+    const onRoomCreateToast = () => toast.success('Successfully created room');
+    const onRestaurantAddToast = () => toast.success('Successfully added restaurant');
+
     useEffect(() => {
         console.log("Running useeffect")
         const regex = /\/room\/\d+/;
@@ -24,6 +30,7 @@ const Homepage = () => {
             setInCreatedRoom(true);
             setRoomID(window.location.pathname.match(/\d+/)[0])
             console.log("In room" + "with id" + roomID)
+            onRoomJoinToast();
             return
         } else {
             console.log("Not in room. Attempting to connect to server to create room")
@@ -43,6 +50,7 @@ const Homepage = () => {
                     setRoomID(data.room_id)
                     // Set the URL to also match the actual room URL
                     window.history.replaceState("", "", "/room/" + data.room_id);
+                    onRoomCreateToast();
                 }   
                 ).catch((error) => {
                     console.error('Error:', error);
@@ -61,11 +69,13 @@ const Homepage = () => {
 
     function addRestaurant() {
         closeModal();
+        onRestaurantAddToast();
         console.log(selectedPlace)
     }
 
     return (
         <>
+            <Toaster />
             <div className="h-screen w-screen flex flex-col gap-6 justify-center items-center px-5 pb-20">
                 <h1 className="text-5xl font-bold"> Picky</h1>
                 <div className="flex flex-row gap-5 ">

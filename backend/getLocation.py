@@ -1,14 +1,14 @@
 import requests
 
 '''
-getSite is a function which takes in a valid Google Maps API Key and
-a valid Google Maps Place ID and, if it exists, returns the website
+getLocation is a function which takes in a valid Google Maps API Key and
+a valid Google Maps Place ID and, if it exists, returns the location coordinates
 associated with the place.
 '''
 
-def getSite(api_key: str, place_id: str ) -> str:
+def getLocation(api_key: str, place_id: str ) -> str:
     # URL for the Place Details API
-    api_url = f'https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&fields=website&key={api_key}'
+    api_url = f'https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&fields=geometry&key={api_key}'
 
     try:
         # Send a GET request to the API
@@ -20,13 +20,13 @@ def getSite(api_key: str, place_id: str ) -> str:
             data = response.json()
             print(data)
 
-            # Check if the response contains the website URL
-            if 'result' in data and 'website' in data['result']:
-                website_url = data['result']['website']
-                print("Website URL:", website_url)
-                return website_url
+            # Check if the response contains the location 
+            if 'result' in data and 'geometry' in data['result'] and 'location' in data['result']['geometry']:
+                location = data['result']['geometry']['location']
+                print("Location Coordinates:", location)
+                return f"{location['lat']},{location['lng']}"
             else:
-                print("Website URL not found for this location.")
+                print("location coordinates not found for this location.")
                 return None
         else:
             print("Error:", response.status_code)
@@ -34,8 +34,7 @@ def getSite(api_key: str, place_id: str ) -> str:
     except requests.RequestException as e:
         print("Error fetching data:", e)
         return None
-
-
+    
 if __name__ == '__main__':
     # Replace 'YOUR_API_KEY' with your actual API key
     api_key = 'YOUR_API_KEY'
@@ -43,4 +42,5 @@ if __name__ == '__main__':
     # Place ID of the location you want to retrieve the website URL for
     place_id = 'ChIJuQFwNo68woARC7sp3N5RWKs' #set to BCD Tofu House in Irvine for example
 
-    website = getSite(api_key, place_id)
+    coordinates = getLocation(api_key, place_id)
+    print(coordinates)

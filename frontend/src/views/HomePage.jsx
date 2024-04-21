@@ -4,6 +4,7 @@ import React from 'react';
 
 import './HomePage.css';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import { BACKEND_ENDPOINT } from '../constants';
 const GOOGLE_PLACES_API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
 
 
@@ -29,7 +30,7 @@ const Homepage = () => {
             // Not in created room
 
         //     // Create room
-            fetch("http://127.0.0.1:8000/", {
+            fetch(BACKEND_ENDPOINT, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

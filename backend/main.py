@@ -192,7 +192,8 @@ async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], indivi
 
     # TODO: Add vote for restaurant to MongoDB
     restaurants_collection = room_db['restaurants']
-    restaurants_collection.find({"place_id" : restaurant.place_id})['votes'] = restaurants_collection.find({"place_id" : restaurant.place_id})['votes'] + 1
+    restaurants_collection.update_one( {"place_id" : restaurant.place_id} ,
+                                { '$inc': {"votes" : 1}})
 
     num_visited_restaurants = 0
     total_restaurants = 10

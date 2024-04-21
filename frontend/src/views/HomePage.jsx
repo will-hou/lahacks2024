@@ -10,6 +10,7 @@ import ReactLoading from 'react-loading';
 import { BACKEND_ENDPOINT } from '../constants';
 const GOOGLE_PLACES_API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
 
+const POLLING_INTERVAL = 5000;
 
 const Homepage = () => {
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -21,24 +22,26 @@ const Homepage = () => {
 
     const onRoomJoinToast = () => toast.success('Successfully joined room');
     const onRoomCreateToast = () => toast.success('Successfully created room');
-    const onRestaurantAddToast = () => toast.success('Successfully added restaurant');
+    const onRestaurantAddToast = () => toast.success('Suggestion received by the group');
+    const onRestaurantAddModalToast = () => toast.success('Successfully added restaurant');
+    const onRestaurantAddFailedToast = () => toast.error('Not a restaurant');
 
     function fetchNumIndividuals(roomId) {
         return fetch(`${BACKEND_ENDPOINT}numindividuals/?room_id=${roomId}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.json();
-          })
-          .then(data => 
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data =>
                 setNumInRoom(data)
             )
-          .catch(error => {
-            console.error('Error fetching data:', error);
-            return null;
-          });
-      }
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                return null;
+            });
+    }
 
     useEffect(() => {
         console.log("Running useeffect")
@@ -114,13 +117,13 @@ const Homepage = () => {
                 console.error('Error fetching data:', error);
             }
         };
-    
+
         // Call fetchData initially
         fetchData();
-    
+
         // Set up interval to call fetchData every 5 seconds
-        const intervalId = setInterval(fetchData, 5000);
-    
+        const intervalId = setInterval(fetchData, POLLING_INTERVAL);
+
         // Clean up the interval on component unmount
         return () => clearInterval(intervalId);
     }, [roomID]); // Dependency array with roomID
@@ -129,10 +132,35 @@ const Homepage = () => {
         setIsOpen(false);
     }
 
-    function addRestaurant() {
+    async function addRestaurant() {
         closeModal();
-        onRestaurantAddToast();
+        onRestaurantAddModalToast();
+        console.log("Trying to add restaurant")
         console.log(selectedPlace)
+
+        const queryParams = new URLSearchParams({
+            place_id: selectedPlace.value.place_id,
+            room_id: roomID, // Adjust as needed
+            individual_id: individualId, // Adjust as needed
+        });
+
+        const url = `${BACKEND_ENDPOINT}add-restaurant?${queryParams}`;
+        console.log(url)
+
+        try {
+            const response = await fetch(url, { 'method': 'POST' });
+
+            if (!response.ok) {
+                throw new Error('Failed to add restaurant');
+            }
+
+            console.log('Restaurant added successfully');
+            onRestaurantAddToast();
+
+        } catch (error) {
+            console.error('Error adding restaurant:', error);
+            onRestaurantAddFailedToast();
+        }
     }
 
     return (

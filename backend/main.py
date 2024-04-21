@@ -22,6 +22,7 @@ mclient = MongoClient("mongodb+srv://yasper:29DVVkQOa9IAKamB@lahacks2024.dcnfecn
 class Restaurant(BaseModel):
     place_id: str
     name: str
+    link: str
     photo_reference: str
     price_level: int # 0 - 4
     rating: float # 1.0 - 5.0
@@ -88,7 +89,8 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
     restaurants_collection = room_db["restaurants"]
     restaurants_collection.insert_one({
         "place_id" : restaurant.place_id,
-        "name" : restaurant.name,
+        "name" : restaurant.name, 
+        "link" : restaurant.link,
         "photo_reference" : restaurant.photo_reference,
         "price_level" : restaurant.price_level,
         "rating" : restaurant.rating,
@@ -136,9 +138,11 @@ async def get_pair(room_id : int, individual_id : str):
     rnd_two = room_db['restaurants'].find_one(random.choices(restaurants_with_weighting.keys, weights=restaurants_with_weighting.values, k=1))
 
     # Get a pair of restaurants from MongoDB that have not already been visited
-    restaurant_one : Restaurant = Restaurant(place_id=rnd_one['place_id'], name=rnd_one['name'], photo_reference=rnd_one['photo_reference'],
+    restaurant_one : Restaurant = Restaurant(place_id=rnd_one['place_id'], name=rnd_one['name'], 
+                        link=rnd_one['link'], photo_reference=rnd_one['photo_reference'],
                         price_level=rnd_one['price_level'], rating=rnd_one['rating'])
-    restaurant_two : Restaurant = Restaurant(place_id=rnd_two['place_id'], name=rnd_two['name'], photo_reference=rnd_two['photo_reference'],
+    restaurant_two : Restaurant = Restaurant(place_id=rnd_two['place_id'], name=rnd_two['name'], 
+                        link=rnd_one['link'], photo_reference=rnd_two['photo_reference'],
                         price_level=rnd_two['price_level'], rating=rnd_two['rating'])
     new_pair = {"restaurant_one": restaurant_one, 
                 "restaurant_two": restaurant_two}

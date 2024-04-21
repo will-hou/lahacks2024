@@ -56,13 +56,16 @@ function WinnersPage() {
         <div className='flex flex-col px-5 gap-5 justify-center items-center h-screen w-screen'>
             <h1 className='text-8xl'>🎉</h1>
             <h1 className='font-bold text-2xl'>You're Going To </h1>
-            <RestaurantCard
-                place_id={winner?.place_id}
-                name={winner?.name}
-                link={winner?.link}
-                photo_reference={getImageUrl(winner?.photo_reference, 400, 400)}
-                price_level={winner?.price_level}
-                rating={winner?.rating} />
+            {winner && (
+                <RestaurantCard
+                    place_id={winner.place_id}
+                    name={winner.name}
+                    link={winner.link}
+                    photo_reference={getImageUrl(winner.photo_reference, 400, 400)}
+                    price_level={winner.price_level}
+                    rating={winner.rating}
+                />
+            )}
         </div>
     );
 }

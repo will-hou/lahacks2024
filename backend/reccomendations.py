@@ -1,6 +1,7 @@
 from searchNearby import searchNearby
 from getSite import getSite
 from getLocation import getLocation
+from getDetails import getDetails
 
 def getReccomendations(api_key: str, place_id: str):
 
@@ -10,6 +11,9 @@ def getReccomendations(api_key: str, place_id: str):
     # 2) get the info (place_ids) of nearby restaurants that fit keywords
     keywords = ['chicken', 'cheap']
     nearbyPlaces = searchNearby(coordinates, keywords)
-    
 
+
+    return
+
+if __name__ == '__main__':
     pass

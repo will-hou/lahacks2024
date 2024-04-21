@@ -11,7 +11,6 @@ import random
 
 app = FastAPI()
 
-# Allow all origins for now
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

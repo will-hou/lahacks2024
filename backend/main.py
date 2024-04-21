@@ -241,7 +241,7 @@ async def winner(room_id : int, individual_id : str):
     room_db = mclient[str(room_id)]
     
     # Get the winner from MongoDB and return
-    for restaurant in room_db['restaurants']:
+    for restaurant in room_db['restaurants'].find():
         if restaurant['is_winner'] == True:
             winner : Restaurant = Restaurant(place_id=restaurant['place_id'], name=restaurant['name'], 
                         link=restaurant['link'], photo_reference=restaurant['photo_reference'],

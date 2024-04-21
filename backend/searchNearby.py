@@ -1,7 +1,6 @@
 import requests
 
-def searchNearby(location, keywords, open_now=True):
-    api_key = 'YOUR_API_KEY'
+def searchNearby(api_key, location, keywords, open_now=True):
     url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
     
     params = {

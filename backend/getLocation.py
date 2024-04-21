@@ -18,12 +18,12 @@ def getLocation(api_key: str, place_id: str ) -> str:
         if response.status_code == 200:
             # Parse the JSON response
             data = response.json()
-            print(data)
+            #print(data)
 
             # Check if the response contains the location 
             if 'result' in data and 'geometry' in data['result'] and 'location' in data['result']['geometry']:
                 location = data['result']['geometry']['location']
-                print("Location Coordinates:", location)
+                #print("Location Coordinates:", location)
                 return f"{location['lat']},{location['lng']}"
             else:
                 print("location coordinates not found for this location.")

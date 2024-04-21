@@ -35,11 +35,11 @@ const MapViewer = () => {
         return (
             <APIProvider apiKey={GOOGLE_PLACES_API_KEY}>
                 <Map
-                    style={{ width: '100vw', height: '100vh' }}
+                    className='h-96 w-96'
                     defaultCenter={{ lat: location.latitude, lng: location.longitude }}
                     defaultZoom={15}
                     gestureHandling={'greedy'}
-                // disableDefaultUI={true}
+                    disableDefaultUI={true}
                 >
 
                     <Marker

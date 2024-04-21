@@ -100,9 +100,7 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
     })
 
     for individual in individuals_collection.find():
-        new_map = individual['restaurants_seen']
-        new_map[str(restaurant.place_id)] = 0
-        individual['restaurants_seen'] = new_map
+        individual['restaurants_seen'][str(restaurant.place_id)] = 0
 
     return {"message": "Added restaurant"}
 

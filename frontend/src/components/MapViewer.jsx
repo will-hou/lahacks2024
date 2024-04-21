@@ -33,14 +33,13 @@ const MapViewer = () => {
 
     if (location) {
         return (
-            <APIProvider apiKey={GOOGLE_PLACES_API_KEY}>
+            <APIProvider apiKey={GOOGLE_PLACES_API_KEY} libraries={["places"]}>
                 <Map
                     className='h-96 w-96'
                     defaultCenter={{ lat: location.latitude, lng: location.longitude }}
                     defaultZoom={15}
                     gestureHandling={'cooperative'}
-                    disableDefaultUI={true}
-                    
+                    disableDefaultUI={true}   
                 >
                     <Marker
                         position={{ lat: location.latitude, lng: location.longitude }}

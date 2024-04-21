@@ -151,6 +151,12 @@ async def get_pair(room_id : int, individual_id : str):
 
     # Set the new pair of restaurants as visited by the indiv id
 
+    individuals_collection.update_one( { '_id': individual_id }, 
+                                { '$inc': {"restaurants_seen."+restaurant.place_id : 1}})
+
+    individuals_collection.update_one( { '_id': individual_id }, 
+                                { '$inc': {"restaurants_seen."+restaurant.place_id : 1}})
+
     return new_pair
 
 @app.post("/vote")

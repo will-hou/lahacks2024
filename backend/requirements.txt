@@ -1,3 +1,4 @@
 fastapi[all]
 pydantic==2.7.0
 pymongo==4.6.3
+requests==2.31.0

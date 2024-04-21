@@ -75,7 +75,7 @@ const ComparePage = () => {
             try {
                 console.log("Fetching restaurants from room " + roomID);
 
-                const response = await fetch('http://127.0.0.1:8000/restaurants?room_id=' + roomID);
+                const response = await fetch(BACKEND_ENDPOINT + 'restaurants?room_id=' + roomID);
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }

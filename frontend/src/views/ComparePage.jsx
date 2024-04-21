@@ -57,7 +57,7 @@ const ComparePage = () => {
         if (canStartVoting & !restaurantOne & !isFinishedVoting) {
             console.log("Trying to fetch pair")
             fetchPair();
-            notifyOfPairings();
+            // notifyOfPairings();
         }
     }, [canStartVoting, restaurantOne]);
 

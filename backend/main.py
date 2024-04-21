@@ -10,8 +10,6 @@ import random
 
 app = FastAPI()
 
-app.next_room_index = 1000
-
 logger = logging.getLogger("uvicorn")
 logger.setLevel(logging.DEBUG)
 
@@ -31,8 +29,9 @@ class Restaurant(BaseModel):
 @app.get("/")
 async def root():
 
-    room_id = app.next_room_index
-    app.next_room_index += 1
+    room_id = 1000
+    while str(room_id) in mclient.list_database_names():
+        room_id += 1
 
     # Create new room and new database in MongoDB for the room
     room_db = mclient[str(room_id)]
@@ -65,7 +64,11 @@ async def join_room(room_id):
         "finished_voting" : False,
     }).inserted_id
 
-    response = JSONResponse(content={"message": "Room created", "room_id": int(room_id), "individual_id": str(indiv_id)})
+    for restaurant in room_db['restaurants'].find():
+        individuals_collection.update_one( { '_id': indiv_id }, 
+                                { '$set': {"restaurants_seen."+restaurant['place_id'] : 0}})
+
+    response = JSONResponse(content={"message": "Room joined", "room_id": int(room_id), "individual_id": str(indiv_id)})
 
     return response
 
@@ -100,7 +103,6 @@ async def add_restaurant(restaurant : Restaurant, room_id : Annotated[int, Body(
     })
 
     for individual in individuals_collection.find():
-        individual['restaurants_seen'][str(restaurant.place_id)] = 0
         individuals_collection.update_one( { '_id': individual['_id'] }, 
                                 { '$set': {"restaurants_seen."+restaurant.place_id : 0}})
 

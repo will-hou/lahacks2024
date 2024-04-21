@@ -167,8 +167,11 @@ async def get_pair(room_id : int, individual_id : str):
     individuals_collection.update_one( { '_id': ObjectId(individual_id) }, 
                                 { '$inc': {"restaurants_seen."+rnd_two['place_id'] : 1}})
 
-    rnd_one['appearances'] = rnd_one['appearances'] + 1
-    rnd_two['appearances'] = rnd_two['appearances'] + 1
+    room_db['restaurants'].update_one( {"place_id" : rnd_one['place_id']} ,
+                                { '$inc': {"appearances" : 1}})
+    room_db['restaurants'].update_one( {"place_id" : rnd_two['place_id']} ,
+                                { '$inc': {"appearances" : 1}})
+
 
     return new_pair
 

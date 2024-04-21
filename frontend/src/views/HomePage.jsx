@@ -4,7 +4,7 @@ import React from 'react';
 
 import './HomePage.css';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import ReactLoading from 'react-loading';
 
 import { useRoomContext } from '../RoomContext';
@@ -171,8 +171,6 @@ const Homepage = () => {
 
     return (
         <>
-            <Toaster />
-
             {/* Display loading circle if we aren't in the room yet*/}
             {(!individualID) ? (
                 <div className='flex gap-5 flex-col justify-center items-center h-screen w-screen'>

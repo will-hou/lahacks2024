@@ -8,9 +8,8 @@ const CHECK_IF_VOTING_ELIGIBLE_INTERVAL = 5000
 const ComparePage = () => {
 
     const [canStartVoting, setCanStartVoting] = useState(false)
-    const { roomID, setRoomID, individualID, setindividualID } = useRoomContext();
-    const [restaurantOne, setRestaurantOne] = useState(null);
-    const [restaurantTwo, setRestaurantTwo] = useState(null);
+    const { roomID, individualID, restaurantOne, restaurantTwo, setRestaurantOne, setRestaurantTwo, isFinishedVoting} = useRoomContext();
+    
 
     const getImageUrl = (photoReference, maxWidth, maxHeight) => {
         const API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
@@ -47,11 +46,11 @@ const ComparePage = () => {
     };
 
     useEffect(() => {
-        if (canStartVoting) {
+        if (canStartVoting & !restaurantOne & !isFinishedVoting) {
             console.log("Trying to fetch pair")
             fetchPair();
         }
-    }, [canStartVoting]);
+    }, [canStartVoting, restaurantOne]);
 
     // Check if we can start voting
     useEffect(() => {

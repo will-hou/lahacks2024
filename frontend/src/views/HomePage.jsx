@@ -27,12 +27,12 @@ const Homepage = () => {
 
     return (
         <>
-            <div className="h-screen w-screen flex flex-col gap-5 justify-center items-center px-5">
+            <div className="h-screen w-screen flex flex-col gap-6 justify-center items-center px-5 pb-20">
                 <h1 className="text-5xl font-bold"> Picky</h1>
                 <div className="flex flex-row gap-5 ">
                     <div className='flex flex-row gap-2 items-center'>
                         <div className="h-3 w-3 rounded-full bg-green-500 flex justify-center items-center" />
-                        <p> Num connected </p>
+                        <p> 2 Online </p>
                     </div>
                     <p> | </p>
                     <p> Los Angeles, CA </p>

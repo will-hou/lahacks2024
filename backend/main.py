@@ -171,7 +171,7 @@ async def get_pair(room_id : int, individual_id : str):
                         link=rnd_one['link'], photo_reference=rnd_one['photo_reference'],
                         price_level=rnd_one['price_level'], rating=rnd_one['rating'])
     restaurant_two : Restaurant = Restaurant(place_id=rnd_two['place_id'], name=rnd_two['name'], 
-                        link=rnd_one['link'], photo_reference=rnd_two['photo_reference'],
+                        link=rnd_two['link'], photo_reference=rnd_two['photo_reference'],
                         price_level=rnd_two['price_level'], rating=rnd_two['rating'])
     new_pair = {"restaurant_one": restaurant_one, 
                 "restaurant_two": restaurant_two}

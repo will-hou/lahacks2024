@@ -171,3 +171,10 @@ async def winner(room_id : Annotated[int, Body()], individual_id : Annotated[str
     # Get the winner from MongoDB and return
     winner : Restaurant = ""
     return {"winner" : winner}
+
+@app.get("/numindividuals")
+async def num_individuals(room_id : int):
+    count = 0
+    for individual in mclient[str(room_id)]['individuals'].find():
+        count += 1
+    return count

@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useRoomContext } from '../RoomContext.jsx';
 
 import RestaurantCard from '../components/RestaurantCard.jsx';
+import { BACKEND_ENDPOINT } from '../constants.js';
+
+import { useNavigate } from 'react-router-dom';
 
 const CHECK_IF_VOTING_ELIGIBLE_INTERVAL = 5000
 
@@ -10,6 +13,8 @@ const ComparePage = () => {
     const [canStartVoting, setCanStartVoting] = useState(false)
     const { roomID, individualID, restaurantOne, restaurantTwo, setRestaurantOne, setRestaurantTwo, isFinishedVoting} = useRoomContext();
     
+    const navigate = useNavigate();
+
 
     const getImageUrl = (photoReference, maxWidth, maxHeight) => {
         const API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
@@ -28,7 +33,7 @@ const ComparePage = () => {
 
     const fetchPair = async () => {
 
-        const url = `http://127.0.0.1:8000/get-pair?room_id=${roomID}&individual_id=${individualID}`;
+        const url = `${BACKEND_ENDPOINT}get-pair?room_id=${roomID}&individual_id=${individualID}`;
 
         try {
             const response = await fetch(url);
@@ -51,6 +56,15 @@ const ComparePage = () => {
             fetchPair();
         }
     }, [canStartVoting, restaurantOne]);
+
+    useEffect(() => {
+        if (isFinishedVoting) {
+            console.log("Voting is finished")
+            //  Navigate to the winners page 
+            navigate("/winner");
+        }
+
+    }, [isFinishedVoting]);
 
     // Check if we can start voting
     useEffect(() => {

@@ -251,7 +251,7 @@ async def vote(place_id : str, room_id : int, individual_id : str):
     return {"message": "Vote successful", "finished_voting" : False}
 
 @app.get("/winner")
-async def winner(room_id : int, individual_id : str):
+async def winner(room_id : int):
     # Validate room ID
     if str(room_id) not in mclient.list_database_names():
         return {"message": "Room does not exist"}

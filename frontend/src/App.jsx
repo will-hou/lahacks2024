@@ -7,6 +7,7 @@ import HomePage from './views/HomePage.jsx'
 import ComparePage from './views/ComparePage.jsx'
 import MapPage from './views/MapPage.jsx';
 
+
 import './App.css'
 
 // register Swiper custom elements

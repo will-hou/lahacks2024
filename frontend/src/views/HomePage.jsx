@@ -4,8 +4,10 @@ import React from 'react';
 
 import './HomePage.css';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import ReactLoading from 'react-loading';
+
+import { useRoomContext } from '../RoomContext';
 
 import { BACKEND_ENDPOINT } from '../constants';
 const GOOGLE_PLACES_API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
@@ -16,8 +18,12 @@ const Homepage = () => {
     const [modalIsOpen, setIsOpen] = useState(false);
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [inCreatedRoom, setInCreatedRoom] = useState(false);
-    const [roomID, setRoomID] = useState(null);
-    const [individualId, setIndividualId] = useState(null);
+
+    const { roomID, setRoomID, individualID, setindividualID } = useRoomContext();
+
+    // const [roomID, setRoomID] = useState(null);
+    // const [individualID, setindividualID] = useState(null);
+
     const [numInRoom, setNumInRoom] = useState(0);
 
     const onRoomJoinToast = () => toast.success('Successfully joined room');
@@ -63,7 +69,7 @@ const Homepage = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    setIndividualId(data.individual_id)
+                    setindividualID(data.individual_id)
                     onRoomJoinToast();
                 }
                 ).catch((error) => {
@@ -87,7 +93,7 @@ const Homepage = () => {
                     console.log('Success:', data);
                     console.log("Room created with id: " + data.room_id)
 
-                    setIndividualId(data.individual_id)
+                    setindividualID(data.individual_id)
                     setRoomID(data.room_id)
                     // Set the URL to also match the actual room URL
                     window.history.replaceState("", "", "/room/" + data.room_id);
@@ -101,9 +107,9 @@ const Homepage = () => {
 
     useEffect(() => {
         console.log("Room ID: " + roomID)
-        console.log("Individual ID: " + individualId)
+        console.log("Individual ID: " + individualID)
         console.log("Num in room: " + numInRoom)
-    }, [roomID, individualId])
+    }, [roomID, individualID])
 
     // Fetch number of people in room every 10 seconds
     useEffect(() => {
@@ -141,7 +147,7 @@ const Homepage = () => {
         const queryParams = new URLSearchParams({
             place_id: selectedPlace.value.place_id,
             room_id: roomID, // Adjust as needed
-            individual_id: individualId, // Adjust as needed
+            individual_id: individualID, // Adjust as needed
         });
 
         const url = `${BACKEND_ENDPOINT}add-restaurant?${queryParams}`;
@@ -165,10 +171,8 @@ const Homepage = () => {
 
     return (
         <>
-            <Toaster />
-
             {/* Display loading circle if we aren't in the room yet*/}
-            {(!individualId) ? (
+            {(!individualID) ? (
                 <div className='flex gap-5 flex-col justify-center items-center h-screen w-screen'>
                     <ReactLoading type="spin" color="#000" height={50} width={50} />
                     <h1>Connecting to room...</h1>

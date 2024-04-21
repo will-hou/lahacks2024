@@ -193,7 +193,7 @@ async def get_pair(room_id : int, individual_id : str):
     return new_pair
 
 @app.post("/vote")
-async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
+async def vote(place_id : str, room_id : int, individual_id : str):
 
     # Validate room ID
     if str(room_id) not in mclient.list_database_names():
@@ -209,7 +209,7 @@ async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], indivi
 
     # TODO: Add vote for restaurant to MongoDB
     restaurants_collection = room_db['restaurants']
-    restaurants_collection.update_one( {"place_id" : restaurant.place_id} ,
+    restaurants_collection.update_one( {"place_id" : place_id} ,
                                 { '$inc': {"votes" : 1}})
 
     num_visited_restaurants = 0
@@ -251,7 +251,7 @@ async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], indivi
     return {"message": "Vote successful", "finished_voting" : False}
 
 @app.get("/winner")
-async def winner(room_id : int, individual_id : str):
+async def winner(room_id : int):
     # Validate room ID
     if str(room_id) not in mclient.list_database_names():
         return {"message": "Room does not exist"}

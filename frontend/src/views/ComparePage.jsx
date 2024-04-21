@@ -3,7 +3,6 @@ import { useRoomContext } from '../RoomContext.jsx';
 
 import RestaurantCard from '../components/RestaurantCard.jsx';
 import { BACKEND_ENDPOINT } from '../constants.js';
-import toast from 'react-hot-toast';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +15,7 @@ const ComparePage = () => {
     
     const navigate = useNavigate();
 
-    const notifyOfPairings = toast("You have a pairing to review ->")
+    // const notifyOfPairings = toast("You have a pairing to review ->")
 
 
     const getImageUrl = (photoReference, maxWidth, maxHeight) => {

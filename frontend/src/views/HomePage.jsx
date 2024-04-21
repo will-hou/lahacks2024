@@ -5,9 +5,8 @@ const Homepage = () => {
     console.log("We are on the following path: " + window.location.pathname)
 
     return (
-        <div>
+        <div className="h-screen w-screen flex justify-center items-center">
             <h1>Welcome to the Homepage</h1>
-            <p>This is a boilerplate homepage component.</p>
         </div>
     );
 };

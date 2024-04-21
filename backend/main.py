@@ -196,22 +196,60 @@ async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], indivi
                                 { '$inc': {"votes" : 1}})
 
     num_visited_restaurants = 0
-    total_restaurants = 10
+    for key, value in individuals_collection.find({"_id" : ObjectId(individual_id)})['restaurants_seen'].items():
+        if value >= 1:
+            num_visited_restaurants += 1
+
+    total_restaurants = 0
+    for restaurant in restaurants_collection.find():
+        total_restaurants += 1
     if num_visited_restaurants == total_restaurants:
         # Set finished voting under individual in MongoDB
+        individuals_collection.update_one({"_id" : individual_id}, {'$set' : {'finished_voting' : True}})
 
         # Check if everyone has finished voting
+        everyone_done = True
+        for individual in individuals_collection.find():
+            if individual['finished_voting'] == False:
+                everyone_done = False
+                break
+        
+        if everyone_done == True:
+            # If everyone is finished voting, calculate winner and set that entry to have is_winner = true
+            final_results = {}
+            for restaurant in restaurants_collection.find():
+                final_results[restaurant['place_id']] = restaurant['votes'] / restaurant['appearances']
 
-        # If everyone is finished voting, calculate winner and set that entry to have is_winner = true
+            winner = None
+            for prospect, winrate in final_results.items():
+                if winner == None:
+                    winner = prospect, winrate
+                elif winner[1] < winrate:
+                    winner = prospect, winrate
+
+            restaurants_collection.update_one({"place_id" : winner[0]}, {'$set' : {'is_winner' : True}})
+
         return {"finished_voting": True}
 
-    return {"message": "Vote successful"}
+    return {"message": "Vote successful", "finished_voting" : False}
 
 @app.get("/winner")
 async def winner(room_id : Annotated[int, Body()], individual_id : Annotated[str, Body()]):
+    # Validate room ID
+    if str(room_id) not in mclient.list_database_names():
+        return {"message": "Room does not exist"}
+
+    room_db = mclient[str(room_id)]
+    
     # Get the winner from MongoDB and return
-    winner : Restaurant = ""
-    return {"winner" : winner}
+    for restaurant in room_db['restaurants']:
+        if restaurant['is_winner'] == True:
+            winner : Restaurant = Restaurant(place_id=restaurant['place_id'], name=restaurant['name'], 
+                        link=restaurant['link'], photo_reference=restaurant['photo_reference'],
+                        price_level=restaurant['price_level'], rating=restaurant['rating'])
+            return {"ready": True, "winner": winner}
+
+    return {"ready": False}
 
 @app.get("/numindividuals")
 async def num_individuals(room_id : int):

@@ -38,15 +38,15 @@ const MapViewer = () => {
                     className='h-96 w-96'
                     defaultCenter={{ lat: location.latitude, lng: location.longitude }}
                     defaultZoom={15}
-                    gestureHandling={'greedy'}
+                    gestureHandling={'cooperative'}
                     disableDefaultUI={true}
+                    
                 >
-                    {/* <Marker
+                    <Marker
                         position={{ lat: location.latitude, lng: location.longitude }}
                         clickable={true}
                         onClick={() => alert('marker was clicked!')}
-                        title={'clickable google.maps.Marker'} /> */}
-
+                        title={'clickable google.maps.Marker'} />
                 </Map>
             </APIProvider>
         );

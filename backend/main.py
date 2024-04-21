@@ -1,6 +1,7 @@
 import logging
 from fastapi import FastAPI, Body
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pymongo import MongoClient
 from typing import Annotated
@@ -9,6 +10,16 @@ import random
 
 
 app = FastAPI()
+
+# Allow all CORS
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.next_room_index = 1000
 

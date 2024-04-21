@@ -17,7 +17,7 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    <>  
       <swiper-container className='h-screen w-screen' pagination="true">
         <swiper-slide>
           <HomePage />

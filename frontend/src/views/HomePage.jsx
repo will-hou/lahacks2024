@@ -22,8 +22,9 @@ const Homepage = () => {
 
     const onRoomJoinToast = () => toast.success('Successfully joined room');
     const onRoomCreateToast = () => toast.success('Successfully created room');
-    const onRestaurantAddToast = () => toast.success('Successfully added restaurant');
-    const onRestaurantAddFailedToast = () => toast.error('Failed to add restaurant');
+    const onRestaurantAddToast = () => toast.success('Suggestion received by the group');
+    const onRestaurantAddModalToast = () => toast.success('Successfully added restaurant');
+    const onRestaurantAddFailedToast = () => toast.error('Not a restaurant');
 
     function fetchNumIndividuals(roomId) {
         return fetch(`${BACKEND_ENDPOINT}numindividuals/?room_id=${roomId}`)
@@ -133,6 +134,7 @@ const Homepage = () => {
 
     async function addRestaurant() {
         closeModal();
+        onRestaurantAddModalToast();
         console.log("Trying to add restaurant")
         console.log(selectedPlace)
 

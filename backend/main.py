@@ -204,12 +204,12 @@ async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], indivi
         total_restaurants += 1
     if num_visited_restaurants == total_restaurants:
         # Set finished voting under individual in MongoDB
-        individuals_collection.update_one({"_id" : individual_id}, {'$set' : {'finished_voting' : True}})
+        individuals_collection.update_one({"_id" : ObjectId(individual_id)}, {'$set' : {'finished_voting' : True}})
 
         # Check if everyone has finished voting
         everyone_done = True
         for individual in individuals_collection.find():
-            if individual['finished_voting'] == False:
+            if individual['finished_voting'] == False and str(individual['_id']) != individual_id:
                 everyone_done = False
                 break
         
@@ -228,7 +228,7 @@ async def vote(restaurant : Restaurant, room_id : Annotated[int, Body()], indivi
 
             restaurants_collection.update_one({"place_id" : winner[0]}, {'$set' : {'is_winner' : True}})
 
-        return {"finished_voting": True}
+        return {"message": "Vote successful", "finished_voting": True}
 
     return {"message": "Vote successful", "finished_voting" : False}
 

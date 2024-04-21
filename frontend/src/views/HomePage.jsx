@@ -31,6 +31,7 @@ const Homepage = () => {
     const onRestaurantAddToast = () => toast.success('Suggestion received by the group');
     const onRestaurantAddModalToast = () => toast.success('Successfully added restaurant');
     const onRestaurantAddFailedToast = () => toast.error('Not a restaurant');
+    const OnCopyToast = () => toast('📋 Link copied to clipboard');
 
     function fetchNumIndividuals(roomId) {
         return fetch(`${BACKEND_ENDPOINT}numindividuals/?room_id=${roomId}`)
@@ -190,7 +191,10 @@ const Homepage = () => {
                             <p> Los Angeles, CA </p>
                         </div>
                         <div className="bg-gray-300 bg-opacity-50 rounded-lg p-4 w-full flex justify-center">
-                            <a href="#" onClick={() => { navigator.clipboard.writeText(window.location.href) }} className='underline'> Tap to copy link </a>
+                            <a href="#" onClick={() => {
+                                navigator.clipboard.writeText(window.location.href)
+                                OnCopyToast()
+                            }} className='underline'> Tap to copy link </a>
                         </div>
                         <div className='flex items-center justify-center bg-opacity-50 rounded-lg h-1/5 border-dashed border-2 border-black p-4'>
                             <p className='text-center'>
